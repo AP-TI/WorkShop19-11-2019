@@ -109,29 +109,13 @@ namespace WebShop.Controllers
             return $"Response time: {timer.ElapsedMilliseconds}";
         }
 
-        [HttpPost("concurrent-queueing")]
+        [HttpPost("job-persistence")]
         public async Task<ActionResult<string>> PostOrderConcurrentQueueing(OrderCreateModel order)
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
 
-            //TODO CONCURRENCY 3: execute the following actions concurrently using a queueing strategy. Compare response time with the previous concurrent response time
-            await _logger.LogAsync();
-            await PostToDatabaseAsync(order);
-            await _mailer.MailAsync();
-
-            timer.Stop();
-
-            return $"Response time: {timer.ElapsedMilliseconds}";
-        }
-
-        [HttpPost("parallel-queueing")]
-        public async Task<ActionResult<string>> PostOrderParallelQueueing(OrderCreateModel order)
-        {
-            Stopwatch timer = new Stopwatch();
-            timer.Start();
-
-            //TODO PARALLEL 3: execute the following actions in parallel using a queueing strategy. Compare response time with the previous parallel response time
+            //TODO Job persistence 1: execute the following actions concurrently using a queueing strategy. Compare response time with the previous concurrent response time
             await _logger.LogAsync();
             await PostToDatabaseAsync(order);
             await _mailer.MailAsync();

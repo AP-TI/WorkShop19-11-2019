@@ -50,9 +50,9 @@ namespace WebShop.Controllers
 
 
         //TODO Query 1: extend the search method by adding a filter on 'AmountInStock' (exact match). 
-        //Make sure the query is only executed once, and execution happens after filtering!
+        //Make sure the query is only executed once, and execution happens after filtering (deferred execution) !
 
-        //TODO Query 2: improve query execution by using async await
+        //TODO Query 2: improve performance by using async await
 
         //TODO Query 3: since we only need read access to get our results, disable changetracking to improve performance even further
 

@@ -5,6 +5,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.Data.Context;
 using WebShop.Data.Entities;
+using WebShop.Models;
 using WebShop.Shared.Logger;
 using WebShop.Shared.Mailer;
 
@@ -29,17 +30,91 @@ namespace WebShop.Controllers
             _dbContext = context ?? throw new System.ArgumentNullException(nameof(context));
         }
 
-        [HttpPost()]
-        public async Task<ActionResult<string>> PostOrder(Order order)
+        [HttpPost("sequential")]
+        public async Task<ActionResult<string>> PostOrder(OrderCreateModel order)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
+            await _logger.LogAsync();
+            await PostToDatabaseAsync(order);
+            await _mailer.MailAsync();
+
+            timer.Stop();
+
+            return $"Response time: {timer.ElapsedMilliseconds}";
+        }
+
+        [HttpPost("concurrent")]
+        public async Task<ActionResult<string>> PostOrderConcurrent(OrderCreateModel order)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
+            //TODO CONCURRENCY 1: execute the following actions concurrently. Compare response time with the previous results
+            await _logger.LogAsync();
+            await PostToDatabaseAsync(order);
+            await _mailer.MailAsync();
+
+            timer.Stop();
+
+            return $"Response time: {timer.ElapsedMilliseconds}";
+        }
+
+        [HttpPost("parallel")]
+        public async Task<ActionResult<string>> PostOrderParallel(OrderCreateModel order)
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
 
             //TODO PARALLEL 1: execute the following actions in parallel. Compare response time with the original response time
-            //TODO CONCURRENCY 1: execute the following actions concurrently. Compare response time with the previous results
-            //TODO PARALLEL 2: execute the following actions in parallel using a fire and forget strategy. Compare response time with the previous parallel response time
+            await _logger.LogAsync();
+            await PostToDatabaseAsync(order);
+            await _mailer.MailAsync();
+
+            timer.Stop();
+
+            return $"Response time: {timer.ElapsedMilliseconds}";
+        }
+
+        [HttpPost("concurrent-fireforget")]
+        public async Task<ActionResult<string>> PostOrderConcurrentFireForget(OrderCreateModel order)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
             //TODO CONCURRENCY 2: execute the following actions concurrently using a fire and forget strategy. Compare response time with the previous concurrent response time
-            //TODO PARALLEL 3: execute the following actions in parallel using a queueing strategy. Compare response time with the previous parallel response time
+            await _logger.LogAsync();
+            await PostToDatabaseAsync(order);
+            await _mailer.MailAsync();
+
+            timer.Stop();
+
+            return $"Response time: {timer.ElapsedMilliseconds}";
+        }
+
+        [HttpPost("parallel-fireforget")]
+        public async Task<ActionResult<string>> PostOrderParallelFireForget(OrderCreateModel order)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
+            //TODO PARALLEL 2: execute the following actions in parallel using a fire and forget strategy. Compare response time with the previous parallel response time
+            await _logger.LogAsync();
+            await PostToDatabaseAsync(order);
+            await _mailer.MailAsync();
+
+            timer.Stop();
+
+            return $"Response time: {timer.ElapsedMilliseconds}";
+        }
+
+        [HttpPost("concurrent-queueing")]
+        public async Task<ActionResult<string>> PostOrderConcurrentQueueing(OrderCreateModel order)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
             //TODO CONCURRENCY 3: execute the following actions concurrently using a queueing strategy. Compare response time with the previous concurrent response time
             await _logger.LogAsync();
             await PostToDatabaseAsync(order);
@@ -50,10 +125,30 @@ namespace WebShop.Controllers
             return $"Response time: {timer.ElapsedMilliseconds}";
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
-        private async Task PostToDatabaseAsync(Order order)
+        [HttpPost("parallel-queueing")]
+        public async Task<ActionResult<string>> PostOrderParallelQueueing(OrderCreateModel order)
         {
-            await _dbContext.Orders.AddAsync(order);
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
+            //TODO PARALLEL 3: execute the following actions in parallel using a queueing strategy. Compare response time with the previous parallel response time
+            await _logger.LogAsync();
+            await PostToDatabaseAsync(order);
+            await _mailer.MailAsync();
+
+            timer.Stop();
+
+            return $"Response time: {timer.ElapsedMilliseconds}";
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        private async Task PostToDatabaseAsync(OrderCreateModel order)
+        {
+            await _dbContext.Orders.AddAsync(new Order
+            {
+                Name = order.Name,
+                Address = order.Address
+            });
         }
     }
 }

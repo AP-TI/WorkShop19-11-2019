@@ -142,7 +142,7 @@ namespace WebShop.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        private async Task PostToDatabaseAsync(OrderCreateModel order)
+        public async Task PostToDatabaseAsync(OrderCreateModel order)
         {
             await _dbContext.Orders.AddAsync(new Order
             {

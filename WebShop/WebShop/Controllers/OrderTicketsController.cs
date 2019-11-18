@@ -17,13 +17,12 @@ namespace WebShop.Controllers
         [HttpGet("generateorders")]
         public ActionResult<string> Generate()
         {
-            Stream _stream;
             for (int i = 0; i < 100; i++)
             {
-                _stream = new FileStream($"ordertickets/order{i}.txt", FileMode.OpenOrCreate);
+                var stream = new FileStream($"ordertickets/order{i}.txt", FileMode.OpenOrCreate);
             }
 
-            return $"This is not OK";
+            return $"OK";
         }
     }
 }

@@ -46,6 +46,9 @@ namespace WebShop.Controllers
             return Ok(products.ToList().Select(ToProductModel));
         }
 
+
+
+
         //TODO Query 1: extend the search method by adding a filter on 'AmountInStock' (exact match). 
         //Make sure the query is only executed once, and execution happens after filtering!
 

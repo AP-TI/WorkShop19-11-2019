@@ -1,0 +1,76 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <ApplicationInsightsResourceId>/subscriptions/2785d391-1ca2-4511-a481-71347df6ddeb/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/WebShop</ApplicationInsightsResourceId>
+    <!--
+    Toggles GC between Server (more than 1 processor) or workstation (1 processor)
+    
+    TRUE (default on Windows Server 2016 & Linux): 
+    if you have multiple processors dedicated to just your application, this can really speed up GC, and often allocations too. 
+    GCs happen in parallel on dedicated threads (one for each processor/core), facilitated by a heap per processor. 
+    Segments are larger, favouring throughput and resulting in less frequent, but longer GCs. 
+    This does mean higher memory consumption.
+    Known memory leak when using docker containers with fixed memory limit! https://github.com/dotnet/corefx/issues/33346
+    
+    FALSE (default on Windows 10): 
+    Workstation GC uses smaller segments, which means more frequent collections, 
+    which in turn are short, thus minimising application thread suspensions. 
+    It is best suited for desktop / GUI applications and lightweight services on single-core machines, 
+    processing intermittently (appropriate use cases are few and far between). 
+    -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="dummyfiles\**" />
+    <Content Remove="dummyfiles\**" />
+    <EmbeddedResource Remove="dummyfiles\**" />
+    <None Remove="dummyfiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+    TODO: remove from solution
+    Run the following command in your nuget package manager (npm) console: 
+    Install-Package IDisposableAnalyzers
+    -->
+    <!--<PackageReference Include="IDisposableAnalyzers" Version="2.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>-->
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.2.4" />
+
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="4.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="4.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="1.0.0" />
+
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.6.3" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebShop.Data\WebShop.Data.csproj" />
+    <ProjectReference Include="..\WebShop.Shared\WebShop.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Connected Services\" />
+  </ItemGroup>
+
+</Project>

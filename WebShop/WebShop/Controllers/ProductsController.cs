@@ -28,19 +28,19 @@ namespace WebShop.Controllers
             if (filter == null || filter.IsEmpty)
                 return Ok(_dbContext.Products.ToList());
 
-            IQueryable<Product> products = Enumerable.Empty<Product>().AsQueryable();
+            List<Product> products = new List<Product>();
 
             if (!string.IsNullOrWhiteSpace(filter.NameContains))
             {
                 //TODO LINQ 3: prevent this SQL query from being executed multiple times (multiple solutions)
-                products = _dbContext.Products.Where(x => x.Name.Contains(filter.NameContains));
+                products = _dbContext.Products.Where(x => x.Name.Contains(filter.NameContains)).ToList();
             }
 
             //TODO LINQ 2: prevent this SQL query from loading all product data instead of the result count
-            for (int i = 0; i < products.ToList().Count(); i++)
+            for (int i = 0; i < products.Count(); i++)
             {
                 //TODO LINQ 1: prevent this SQL query from loading all product data instead of item i (use LINQ)
-                Debug.WriteLine($"User requested info about item with id {products.ToArray()[i].Id}");
+                Debug.WriteLine($"User requested info about item with id {products.Select(x => x.Id == i)}");
             }
 
             return Ok(products.ToList().Select(ToProductModel));

@@ -19,7 +19,10 @@ namespace WebShop.Controllers
         {
             for (int i = 0; i < 100; i++)
             {
-                var stream = new FileStream($"ordertickets/order{i}.txt", FileMode.OpenOrCreate);
+                using (var stream = new FileStream($"ordertickets/order{i}.txt", FileMode.OpenOrCreate))
+                {
+
+                }
             }
 
             return $"OK";

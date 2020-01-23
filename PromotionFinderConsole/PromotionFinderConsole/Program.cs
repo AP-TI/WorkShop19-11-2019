@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace PromotionFinderConsole
 {
@@ -11,13 +12,15 @@ namespace PromotionFinderConsole
 
             // TODO (bonus):
             // Provide a cancellation token
-            promotionFinder.PollForCheapProducts(2000);
+            var cancellationSource = new CancellationTokenSource();
+            promotionFinder.PollForCheapProducts(2000, cancellationSource.Token);
 
             Console.WriteLine("Press any key to stop polling");
             Console.ReadKey();
 
             // TODO (bonus):
             // Cancel the polling loop
+            cancellationSource.Cancel();
 
             Console.WriteLine("Press any key to close the program");
             Console.ReadKey();

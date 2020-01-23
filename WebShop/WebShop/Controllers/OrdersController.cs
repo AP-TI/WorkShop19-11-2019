@@ -52,9 +52,9 @@ namespace WebShop.Controllers
             timer.Start();
 
             //TODO CONCURRENCY 1: execute the following actions concurrently. Compare response time with the previous results
-            await _logger.LogAsync();
-            await PostToDatabaseAsync(order);
-            await _mailer.MailAsync();
+
+
+            await Task.WhenAll(_logger.LogAsync(), PostToDatabaseAsync(order), _mailer.MailAsync());
 
             timer.Stop();
 
@@ -68,9 +68,16 @@ namespace WebShop.Controllers
             timer.Start();
 
             //TODO PARALLEL 1: execute the following actions in parallel. Compare response time with the original response time
-            await _logger.LogAsync();
-            await PostToDatabaseAsync(order);
-            await _mailer.MailAsync();
+            var logTask = _logger.LogAsync();
+            var dbTask = PostToDatabaseAsync(order);
+            var mailTask = _mailer.MailAsync();
+
+            var taskList = new List<Task> { logTask, dbTask, mailTask };
+
+            Parallel.ForEach(taskList, (task) =>
+            {
+                task.Wait();
+            });
 
             timer.Stop();
 
@@ -84,9 +91,10 @@ namespace WebShop.Controllers
             timer.Start();
 
             //TODO CONCURRENCY 2: execute the following actions concurrently using a fire and forget strategy. Compare response time with the previous concurrent response time
-            await _logger.LogAsync();
-            await PostToDatabaseAsync(order);
-            await _mailer.MailAsync();
+            Task.Run(async () =>
+            {
+                await Task.WhenAll(_logger.LogAsync(), PostToDatabaseAsync(order), _mailer.MailAsync());
+            });
 
             timer.Stop();
 
@@ -116,9 +124,9 @@ namespace WebShop.Controllers
             timer.Start();
 
             //TODO Job persistence 1: execute the following actions concurrently using a queueing strategy. Compare response time with the previous concurrent response time
-            await _logger.LogAsync();
-            await PostToDatabaseAsync(order);
-            await _mailer.MailAsync();
+            BackgroundJob.Enqueue(() => _logger.LogAsync());
+            BackgroundJob.Enqueue(() => PostToDatabaseAsync(order));
+            BackgroundJob.Enqueue(() => _mailer.MailAsync());
 
             timer.Stop();
 

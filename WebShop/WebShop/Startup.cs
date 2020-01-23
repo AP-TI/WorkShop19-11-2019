@@ -27,7 +27,7 @@ namespace WebShop
         //max 90 connections
         //connection lifetime: 1min
         //command timeout: 15s
-        private static readonly string _dbConnectionString = "Host=localhost;Database=postgres;Username=postgres;Password=pw";
+        private static readonly string _dbConnectionString = "Host=localhost;Database=postgres;Username=postgres;Password=pw;";
 
         public IConfiguration Configuration { get; }
 
@@ -46,7 +46,7 @@ namespace WebShop
             //max 6 connections
             //connection lifetime: 2min
             //tip: https://www.npgsql.org/doc/connection-string-parameters.html
-            services.AddHangfire(x => x.UsePostgreSqlStorage($"Host=localhost;Database=postgres;Username=postgres;Password=pw"));
+            services.AddHangfire(x => x.UsePostgreSqlStorage($"Host=localhost;Database=postgres;Username=postgres;Password=pw;"));
 
             services.AddBusinessServices();
 
